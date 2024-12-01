@@ -1,8 +1,6 @@
 services:
   reverse-proxy:
-    # The official v3 Traefik docker image
     image: traefik:v3.2
-    # Enables the web UI and tells Traefik to listen to docker
     command:
       - "--api.insecure=true"
       - "--providers.docker"
@@ -22,7 +20,8 @@ services:
       CF_DNS_API_TOKEN: ${CF_DNS_API_TOKEN}
     volumes:
       # So that Traefik can listen to the Docker events
-      - /var/run/docker.sock:/var/run/docker.sock
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
     env_file:
       - ./.env
   tutorme:
@@ -33,7 +32,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.tutorme.rule=Host(`api.tutorme.tech`)"
-      - "traefik.enable=true"
+      - "traefik.http.routers.tutorme.entrypoints=websecure"
+      - "traefik.http.routers.tutorme.tls.certresolver=myresolver"
+      - "traefik.http.services.tutorme.loadbalancer.server.port=3000"
     expose:
       - 3000
     environment:
