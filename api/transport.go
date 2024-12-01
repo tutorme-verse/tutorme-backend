@@ -25,7 +25,7 @@ func New(config fiber.Config, port string, logger *slog.Logger, db Storer) *Serv
 	engine := &Server{
 		server: fiber.New(config),
 		port:   port,
-        logger: logger,
+		logger: logger,
 		db:     db,
 	}
 
@@ -39,5 +39,5 @@ func New(config fiber.Config, port string, logger *slog.Logger, db Storer) *Serv
 }
 
 func (s *Server) Start() error {
-	return s.server.Listen(s.port)
+	return s.server.ListenTLS(s.port, "certs/cert.pem", "certs/key.pem")
 }
