@@ -1,32 +1,41 @@
 services:
   reverse-proxy:
-    image: traefik:v3.1
+    # The official v3 Traefik docker image
+    image: traefik:v3.2
+    # Enables the web UI and tells Traefik to listen to docker
     command:
       - "--api.insecure=true"
       - "--providers.docker"
       - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
       - "--entryPoints.websecure.address=:443"
-      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.dnschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.dnschallenge.provider=cloudflare"
+      #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
       - "--certificatesresolvers.myresolver.acme.email=heyanantraj@gmail.com"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
+      - "80:80"
       - "443:443"
       - "8080:8080"
+    environment:
+      CF_DNS_API_TOKEN: ${CF_DNS_API_TOKEN}
     volumes:
+      # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
-      - letsencrypt:/letsencrypt
+    env_file:
+      - ./.env
   tutorme:
     build:
       context: .
       target: ${GO_ENV}
     container_name: tutorme
-    expose:
-      - 3000
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.tutorme.rule=Host(`api.tutorme.tech`)"
-      - "traefik.http.routers.tutorme.entryPoints=websecure"
-      - "traefik.http.routers.tutorme.tls.certresolver=myresolver"
+      - "traefik.enable=true"
+    expose:
+      - 3000
     environment:
       TURSO_DATABASE_URL: ${TURSO_DATABASE_URL}
       TURSO_AUTH_TOKEN: ${TURSO_AUTH_TOKEN}
@@ -36,5 +45,3 @@ services:
       - ./.env
     volumes:
       - .:/app
-volumes:
-  letsencrypt:

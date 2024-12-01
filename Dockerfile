@@ -53,8 +53,5 @@ WORKDIR /prod
 # Copy binary from builder stage
 COPY --from=builder /build/tutorme ./
 
-# Document the port that may need to be published
-EXPOSE 3000
-
 # Start the application
 CMD ["/prod/tutorme"]
