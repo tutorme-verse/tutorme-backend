@@ -54,7 +54,7 @@ WORKDIR /prod
 COPY --from=builder /build/tutorme ./
 
 # Document the port that may need to be published
-EXPOSE 8080
+EXPOSE 3000
 
 # Start the application
 CMD ["/prod/tutorme"]

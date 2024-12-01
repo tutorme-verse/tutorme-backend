@@ -1,18 +1,40 @@
 services:
-  app:
+  reverse-proxy:
+    image: traefik:v3.1
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=heyanantraj@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - letsencrypt:/letsencrypt
+  tutorme:
     build:
       context: .
       target: ${GO_ENV}
     container_name: tutorme
+    expose:
+      - 3000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.tutorme.rule=Host(`api.tutorme.tech`)"
+      - "traefik.http.routers.tutorme.entryPoints=websecure"
+      - "traefik.http.routers.tutorme.tls.certresolver=myresolver"
     environment:
       TURSO_DATABASE_URL: ${TURSO_DATABASE_URL}
       TURSO_AUTH_TOKEN: ${TURSO_AUTH_TOKEN}
       GO_ENV: ${GO_ENV}
-      APP_PORT: ${APP_PORT}
       DOCKER_PORT: ${DOCKER_PORT}
     env_file:
       - ./.env
-    ports:
-      - ${DOCKER_PORT}:${APP_PORT}
     volumes:
       - .:/app
+volumes:
+  letsencrypt:
