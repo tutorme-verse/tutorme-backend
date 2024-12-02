@@ -3,29 +3,32 @@ package main
 import (
 	"database/sql"
 	_ "embed"
-	"flag"
 	"fmt"
 	"log/slog"
 	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	// "github.com/joho/godotenv"
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
 	"tutorme.com/api"
 	"tutorme.com/repository"
 )
 
 func run() error {
-	// Loading in env variables
-    // if err := godotenv.Load(); err != nil {
-    //     return err
-    // }
-    //
-	url := os.Getenv("TURSO_DATABASE_URL")
-	token := os.Getenv("TURSO_AUTH_TOKEN")
-	port := ":" + os.Getenv("DOCKER_PORT")
-	flag.Parse()
+	url, err := ResolveEnv("TURSO_DATABASE_URL")
+	if err != nil {
+		return err
+	}
+	token, err := ResolveEnv("TURSO_AUTH_TOKEN")
+	if err != nil {
+		return err
+	}
+	port, err := ResolveEnv("DOCKER_PORT")
+	if err != nil {
+		return err
+	}
+
+    fmt.Println(port)
 
 	// Config logger
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
@@ -51,7 +54,7 @@ func run() error {
 		DisableStartupMessage: true,
 	}
 
-	server := api.New(fiberCfg, port, logger, queries)
+	server := api.New(fiberCfg, ":"+port, logger, queries)
 
 	return server.Start()
 }
