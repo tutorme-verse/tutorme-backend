@@ -2,7 +2,6 @@ services:
   reverse-proxy:
     image: traefik:v3.2
     command:
-      - "--api.insecure=true"
       - "--providers.docker"
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.web.address=:80"
@@ -15,7 +14,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"
     environment:
       CF_DNS_API_TOKEN: ${CF_DNS_API_TOKEN}
     volumes:
@@ -28,13 +26,16 @@ services:
     build:
       context: .
       target: ${GO_ENV}
-    container_name: tutorme
+    image: anant2raj/tutorme
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.tutorme.rule=Host(`api.tutorme.tech`)"
       - "traefik.http.routers.tutorme.entrypoints=websecure"
       - "traefik.http.routers.tutorme.tls.certresolver=myresolver"
       - "traefik.http.services.tutorme.loadbalancer.server.port=3000"
+    deploy:
+      mode: replicated
+      replicas: 3
     expose:
       - 3000
     environment:
