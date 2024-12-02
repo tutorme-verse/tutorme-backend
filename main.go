@@ -28,8 +28,6 @@ func run() error {
 		return err
 	}
 
-    fmt.Println(port)
-
 	// Config logger
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
