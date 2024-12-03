@@ -22,7 +22,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   tutorme:
-    image: anant2raj/tutorme:0.0.5
+    image: ghcr.io/tutorme-verse/tutorme-backend:${GIT_COMMIT_HASH:-latest}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.tutorme.rule=Host(`api.tutorme.tech`)"
