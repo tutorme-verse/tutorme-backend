@@ -53,10 +53,11 @@ WORKDIR /prod
 # Copy binary from builder stage
 COPY --from=builder /build/tutorme ./
 
-LABEL org.opencontainers.image.source https://github.com/tutorme-verse/tutorme-backend
+RUN apt-get update && apt-get install -y ca-certificates
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates
+RUN update-ca-certificates
+
+LABEL org.opencontainers.image.source https://github.com/tutorme-verse/tutorme-backend
 
 # Start the application
 CMD ["/prod/tutorme"]
