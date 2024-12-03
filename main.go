@@ -41,6 +41,14 @@ func run() error {
 	}
 	defer db.Close()
 
+	rows, err := db.Query("SELECT * FROM users")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to execute query: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Println(rows)
+
 	queries := repository.New(db)
 
 	slog.Info("Starting Server...", "Port", port)
