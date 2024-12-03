@@ -53,5 +53,7 @@ WORKDIR /prod
 # Copy binary from builder stage
 COPY --from=builder /build/tutorme ./
 
+LABEL org.opencontainers.image.source https://github.com/tutorme-verse/tutorme-backend
+
 # Start the application
 CMD ["/prod/tutorme"]
