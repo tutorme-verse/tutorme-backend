@@ -53,10 +53,6 @@ WORKDIR /prod
 # Copy binary from builder stage
 COPY --from=builder /build/tutorme ./
 
-RUN apt-get update && apt-get install -y ca-certificates
-
-RUN update-ca-certificates
-
 LABEL org.opencontainers.image.source https://github.com/tutorme-verse/tutorme-backend
 
 # Start the application
