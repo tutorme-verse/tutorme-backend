@@ -55,5 +55,7 @@ COPY --from=builder /build/tutorme ./
 
 LABEL org.opencontainers.image.source https://github.com/tutorme-verse/tutorme-backend
 
+RUN sudo apt install ca-certificates
+
 # Start the application
 CMD ["/prod/tutorme"]
