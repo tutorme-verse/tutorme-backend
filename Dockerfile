@@ -26,7 +26,6 @@ CMD ["air"]
 # Create a builder stage based on the "base" image
 FROM base AS builder
 
-
 # Move to working directory /build
 WORKDIR /build
 
@@ -39,26 +38,19 @@ RUN go mod download
 # Copy the entire source code into the container
 COPY . .
 
-
 # Build the application
-# Turn off CGO to ensure static binaries
 RUN CGO_ENABLED=0 go build -o tutorme
 
 # Production stage
 # =============================================================================
-# Create a production stage to run the application binary
-FROM base AS production
+# Use a minimal image for production
+FROM debian:bookworm-slim AS production
 
 # Move to working directory /prod
 WORKDIR /prod
 
 # Copy binary from builder stage
 COPY --from=builder /build/tutorme ./
-
-RUN \
-  apt-get update && \
-  apt-get install -y ca-certificates && \
-  apt-get clean
 
 LABEL org.opencontainers.image.source https://github.com/tutorme-verse/tutorme-backend
 
