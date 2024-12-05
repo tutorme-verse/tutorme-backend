@@ -49,6 +49,12 @@ FROM debian:bookworm-slim AS production
 # Move to working directory /prod
 WORKDIR /prod
 
+# Install certificates (explicitly ensuring they are up-to-date)
+RUN \
+  apt-get update && \
+  apt-get install -y ca-certificates && \
+  apt-get clean
+
 # Copy binary from builder stage
 COPY --from=builder /build/tutorme ./
 
