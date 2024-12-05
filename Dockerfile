@@ -26,6 +26,7 @@ CMD ["air"]
 # Create a builder stage based on the "base" image
 FROM base AS builder
 
+
 # Move to working directory /build
 WORKDIR /build
 
@@ -53,9 +54,12 @@ WORKDIR /prod
 # Copy binary from builder stage
 COPY --from=builder /build/tutorme ./
 
-LABEL org.opencontainers.image.source https://github.com/tutorme-verse/tutorme-backend
+RUN \
+  apt-get update && \
+  apt-get install -y ca-certificates && \
+  apt-get clean
 
-RUN sudo apt install ca-certificates
+LABEL org.opencontainers.image.source https://github.com/tutorme-verse/tutorme-backend
 
 # Start the application
 CMD ["/prod/tutorme"]
