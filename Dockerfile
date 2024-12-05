@@ -39,6 +39,7 @@ RUN go mod download
 # Copy the entire source code into the container
 COPY . .
 
+
 # Build the application
 # Turn off CGO to ensure static binaries
 RUN CGO_ENABLED=0 go build -o tutorme
@@ -46,7 +47,7 @@ RUN CGO_ENABLED=0 go build -o tutorme
 # Production stage
 # =============================================================================
 # Create a production stage to run the application binary
-FROM scratch AS production
+FROM base AS production
 
 # Move to working directory /prod
 WORKDIR /prod
