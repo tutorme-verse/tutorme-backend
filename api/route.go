@@ -8,6 +8,6 @@ func (s *Server) register() {
 	v1.Post("/org/create", s.CreateOrganization)
 
 	v1.Get("/health", func(c *fiber.Ctx) error {
-        return c.Send([]byte("Status: OK"))
+        return c.Send([]byte("Status: Server is OK"))
 	})
 }
