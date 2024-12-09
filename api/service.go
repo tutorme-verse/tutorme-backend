@@ -1,18 +1,10 @@
 package api
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
-	"fmt"
-	"io"
 	"log/slog"
-	"net/http"
-	"os"
-	"time"
 
 	"github.com/cloudflare/cloudflare-go"
-	"tutorme.com/types"
 	"tutorme.com/util"
 )
 

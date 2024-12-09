@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
 	"tutorme.com/api"
 	"tutorme.com/internal/repository"
@@ -16,6 +17,11 @@ import (
 )
 
 func run() error {
+	err := godotenv.Load()
+	if err != nil {
+		return err
+	}
+
 	url, err := util.ResolveEnv("TURSO_DATABASE_URL")
 	if err != nil {
 		return err
