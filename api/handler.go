@@ -25,48 +25,9 @@ func (s *Server) CreateOrganization(c *fiber.Ctx) error {
 	}
 
 	ctx := context.Background()
-	// err := CreateDNSRecord(ctx, schoolParams.Subdomain)
-	apiToken, err := util.ResolveEnv("CF_API_TOKEN")
-	if err != nil {
-		return err
-	}
-
-	s.logger.Info(apiToken)
-
-	apiEmail, err := util.ResolveEnv("CF_API_EMAIL")
-	if err != nil {
-		return err
-	}
-
-	s.logger.Info(apiEmail)
-	cfZone, err := util.ResolveEnv("CF_ZONE_ID")
-	if err != nil {
-		return err
-	}
-
-	s.logger.Info(cfZone)
-	api, err := cloudflare.New(apiToken, apiEmail)
-	if err != nil {
-		return err
-	}
-
-	zoneId := cloudflare.ZoneIdentifier(cfZone)
-	isProxied := true
-	recordParams := cloudflare.CreateDNSRecordParams{
-		Type:    "A",
-		Name:    schoolParams.Subdomain,
-		Content: "159.203.82.246",
-		TTL:     3600,
-		Proxied: &isProxied,
-	}
-
-	_, err = api.CreateDNSRecord(ctx, zoneId, recordParams)
-	if err != nil {
-		return err
-	}
+	err := CreateDNSRecord(ctx, schoolParams.Subdomain)
 
 	var dbName = fmt.Sprintf("tutorme-%s", schoolParams.Subdomain)
-
 	tursoDb, err := IssueTursoDatabase(dbName)
 
 	school, err := s.db.CreateSchool(ctx, schoolParams)
