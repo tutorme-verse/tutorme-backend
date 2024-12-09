@@ -65,47 +65,9 @@ func (s *Server) CreateOrganization(c *fiber.Ctx) error {
 		return err
 	}
 
-	dbName := fmt.Sprintf("tutorme-%s", schoolParams.Subdomain)
-	body := []byte(fmt.Sprintf(`{"name": "%s", "group": "default"}`, dbName))
-	fmt.Println(string(body))
+	var dbName = fmt.Sprintf("tutorme-%s", schoolParams.Subdomain)
 
-	reqBody := bytes.NewReader(body)
-
-	client := &http.Client{
-		Timeout: time.Second * 6,
-	}
-
-	requestUrl := fmt.Sprintf("https://api.turso.tech/v1/organizations/%s/databases", os.Getenv("TURSO_ORGANIZATION_SLUG"))
-	tursoToken, err := util.ResolveEnv("TURSO_API_TOKEN")
-	if err != nil {
-		return err
-	}
-	bearer := "Bearer " + tursoToken
-
-	req, err := http.NewRequest(http.MethodPost, requestUrl, reqBody)
-
-	req.Header.Set("Authorization", bearer)
-	req.Header.Add("Content-Type", "application/json")
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return err
-	}
-
-	jsonResp := make([]byte, 1024)
-	n, err := resp.Body.Read(jsonResp)
-
-	if err != nil {
-		if err != io.EOF {
-			return err
-		}
-	}
-
-	var tursoDb types.TursoDatabase
-
-	if err := json.Unmarshal(jsonResp[:n], &tursoDb); err != nil {
-		return err
-	}
+	tursoDb, err := IssueTursoDatabase(dbName)
 
 	school, err := s.db.CreateSchool(ctx, schoolParams)
 	if err != nil {
@@ -142,7 +104,11 @@ func IssueTursoDatabase(dbName string) (types.TursoDatabase, error) {
 	}
 
 	requestUrl := fmt.Sprintf("https://api.turso.tech/v1/organizations/%s/databases", os.Getenv("TURSO_ORGANIZATION_SLUG"))
-	bearer := "Bearer " + os.Getenv("TURSO_API_TOKEN")
+	tursoToken, err := util.ResolveEnv("TURSO_API_TOKEN")
+	if err != nil {
+		return types.TursoDatabase{}, err
+	}
+	bearer := "Bearer " + tursoToken
 
 	req, err := http.NewRequest(http.MethodPost, requestUrl, reqBody)
 
