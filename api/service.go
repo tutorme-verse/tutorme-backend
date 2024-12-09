@@ -21,16 +21,20 @@ func CreateDNSRecord(ctx context.Context, subdomain string) error {
 		return err
 	}
 
+	fmt.Println(apiToken)
+
 	apiEmail, err := util.ResolveEnv("CF_API_EMAIL")
 	if err != nil {
 		return err
 	}
 
+	fmt.Println(apiEmail)
 	cfZone, err := util.ResolveEnv("CF_ZONE_ID")
 	if err != nil {
 		return err
 	}
 
+	fmt.Println(cfZone)
 	api, err := cloudflare.New(apiToken, apiEmail)
 	if err != nil {
 		return err
