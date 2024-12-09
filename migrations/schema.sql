@@ -9,10 +9,10 @@ CREATE TABLE Schools (
 
 CREATE TABLE DatabaseDetails (
     Database_ID INTEGER PRIMARY KEY AUTOINCREMENT,    -- Auto-incremented unique ID
+    Foreign_Database_ID TEXT NOT NULL UNIQUE,
     School_ID INTEGER NOT NULL,                 -- Foreign key to Organizations table
     Database_Name TEXT NOT NULL UNIQUE,               -- Unique name of the Turso database
     Connection_URI TEXT NOT NULL,                     -- Connection URI for the database
     Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,   -- Timestamp for record creation
     FOREIGN KEY (School_ID) REFERENCES Schools(School_ID) ON DELETE CASCADE -- Cascade delete
 );
-

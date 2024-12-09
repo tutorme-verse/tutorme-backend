@@ -9,12 +9,12 @@ import (
 )
 
 type DatabaseDetail struct {
-	DatabaseID    int64          `json:"database_id"`
-	SchoolID      int64          `json:"school_id"`
-	DatabaseName  string         `json:"database_name"`
-	ConnectionUri string         `json:"connection_uri"`
-	Region        sql.NullString `json:"region"`
-	CreatedAt     sql.NullTime   `json:"created_at"`
+	DatabaseID        int64        `json:"database_id"`
+	ForeignDatabaseID string       `json:"foreign_database_id"`
+	SchoolID          int64        `json:"school_id"`
+	DatabaseName      string       `json:"database_name"`
+	ConnectionUri     string       `json:"connection_uri"`
+	CreatedAt         sql.NullTime `json:"created_at"`
 }
 
 type School struct {

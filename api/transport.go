@@ -6,12 +6,12 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	fiberlogger "github.com/gofiber/fiber/v2/middleware/logger"
-	"tutorme.com/repository"
+	"tutorme.com/internal/repository"
 )
 
 type Storer interface {
-	CreateDatabaseDetail(ctx context.Context, arg repository.CreateDatabaseDetailParams) error
-	CreateSchool(ctx context.Context, arg repository.CreateSchoolParams) error
+	CreateDatabaseDetail(ctx context.Context, arg repository.CreateDatabaseDetailParams) (repository.CreateDatabaseDetailRow, error)
+	CreateSchool(ctx context.Context, arg repository.CreateSchoolParams) (repository.School, error)
 }
 
 type Server struct {

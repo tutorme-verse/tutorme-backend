@@ -3,28 +3,46 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
-	"tutorme.com/repository"
+	"tutorme.com/internal/repository"
+	"tutorme.com/types"
 )
 
 func (s *Server) CreateOrganization(c *fiber.Ctx) error {
-	// Parse json body into struct
-	var request repository.CreateSchoolParams
+	var schoolParams repository.CreateSchoolParams
 
-	if err := json.Unmarshal(c.Body(), &request); err != nil {
+	if err := json.Unmarshal(c.Body(), &schoolParams); err != nil {
 		return err
 	}
 
 	ctx := context.Background()
+	err := CreateDNSRecord(ctx, schoolParams.Subdomain)
 
-	// Use the queries to enter new organization
-	if err := s.db.CreateSchool(ctx, request); err != nil {
+	dbName := fmt.Sprintf("tutorme-%s", schoolParams.Subdomain)
+	tursoDb, err := IssueTursoDatabase(dbName)
+
+	school, err := s.db.CreateSchool(ctx, schoolParams)
+	if err != nil {
 		return err
 	}
 
-	// initiate the db
-	// Enter db details into the db details table
-	// Return the db details
-	return nil
+	var dbDetailsParams repository.CreateDatabaseDetailParams = repository.CreateDatabaseDetailParams{
+		ForeignDatabaseID: tursoDb.Database.DbID,
+		SchoolID:          school.SchoolID,
+		DatabaseName:      tursoDb.Database.Name,
+		ConnectionUri:     tursoDb.Database.Hostname,
+	}
+	dbDetails, err := s.db.CreateDatabaseDetail(ctx, dbDetailsParams)
+	if err != nil {
+		return err
+	}
+
+	var finalResp types.CreateOrganizationResponse = types.CreateOrganizationResponse{
+		School:         school,
+		DatabaseDetail: dbDetails,
+	}
+
+	return c.JSON(finalResp)
 }

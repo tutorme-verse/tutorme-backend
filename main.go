@@ -11,19 +11,20 @@ import (
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
 	"tutorme.com/api"
-	"tutorme.com/repository"
+	"tutorme.com/internal/repository"
+	"tutorme.com/util"
 )
 
 func run() error {
-	url, err := ResolveEnv("TURSO_DATABASE_URL")
+	url, err := util.ResolveEnv("TURSO_DATABASE_URL")
 	if err != nil {
 		return err
 	}
-	token, err := ResolveEnv("TURSO_AUTH_TOKEN")
+	token, err := util.ResolveEnv("TURSO_AUTH_TOKEN")
 	if err != nil {
 		return err
 	}
-	port, err := ResolveEnv("DOCKER_PORT")
+	port, err := util.ResolveEnv("DOCKER_PORT")
 	if err != nil {
 		return err
 	}
