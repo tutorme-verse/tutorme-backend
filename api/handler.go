@@ -10,7 +10,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/cloudflare/cloudflare-go"
 	"github.com/gofiber/fiber/v2"
 	"tutorme.com/internal/repository"
 	"tutorme.com/types"
