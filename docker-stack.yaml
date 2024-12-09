@@ -39,6 +39,9 @@ services:
       - TURSO_ORGANIZATION_SLUG
       - GO_ENV
       - DOCKER_PORT
+      - CF_API_TOKEN
+      - CF_API_EMAIL
+      - CF_ZONE_ID
     environment:
       - TURSO_DATABASE_URL_FILE=/run/secrets/TURSO_DATABASE_URL
       - TURSO_AUTH_TOKEN_FILE=/run/secrets/TURSO_AUTH_TOKEN
