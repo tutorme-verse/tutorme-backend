@@ -25,30 +25,41 @@ services:
     image: ghcr.io/tutorme-verse/tutorme-backend:${GIT_COMMIT_HASH:-latest}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.tutorme.rule=Host(`api.tutorme.tech`)"
+      - "traefik.http.routers.tutorme.rule=Host(`*.tutorme.tech`)"
       - "traefik.http.routers.tutorme.entrypoints=websecure"
       - "traefik.http.routers.tutorme.tls.certresolver=myresolver"
       - "traefik.http.services.tutorme.loadbalancer.server.port=3000"
     deploy:
       mode: replicated
       replicas: 3
-    expose:
-      - 3000
     secrets:
       - TURSO_DATABASE_URL
+      - TURSO_API_TOKEN
       - TURSO_AUTH_TOKEN
+      - TURSO_ORGANIZATION_SLUG
       - GO_ENV
       - DOCKER_PORT
     environment:
       - TURSO_DATABASE_URL_FILE=/run/secrets/TURSO_DATABASE_URL
       - TURSO_AUTH_TOKEN_FILE=/run/secrets/TURSO_AUTH_TOKEN
+      - TURSO_API_TOKEN_FILE=/run/secrets/TURSO_API_TOKEN
+      - TURSO_ORGANIZATION_SLUG_FILE=/run/secrets/TURSO_ORGANIZATION_SLUG
       - GO_ENV_FILE=/run/secrets/GO_ENV
       - DOCKER_PORT_FILE=/run/secrets/DOCKER_PORT
+      - CF_API_TOKEN_FILE=/run/secrets/CF_API_TOKEN
+      - CF_API_EMAIL_FILE=/run/secrets/CF_API_EMAIL
+      - CF_ZONE_ID_FILE=/run/secrets/CF_ZONE_ID
 volumes:
   letsencrypt:
 
 secrets:
   CF_DNS_API_TOKEN:
+    external: true
+  CF_API_TOKEN:
+    external: true
+  CF_API_EMAIL:
+    external: true
+  CF_ZONE_ID:
     external: true
   DOCKER_PORT:
     external: true
@@ -57,4 +68,8 @@ secrets:
   TURSO_AUTH_TOKEN:
     external: true
   TURSO_DATABASE_URL:
+    external: true
+  TURSO_ORGANIZATION_SLUG:
+    external: true
+  TURSO_API_TOKEN:
     external: true

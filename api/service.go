@@ -16,20 +16,20 @@ import (
 )
 
 func CreateDNSRecord(ctx context.Context, subdomain string) error {
-    apiToken, err := util.ResolveEnv("CF_API_TOKEN")
-    if err != nil {
-        return err
-    }
+	apiToken, err := util.ResolveEnv("CF_API_TOKEN")
+	if err != nil {
+		return err
+	}
 
-    apiEmail, err := util.ResolveEnv("CF_API_EMAIL")
-    if err != nil {
-        return err
-    }
+	apiEmail, err := util.ResolveEnv("CF_API_EMAIL")
+	if err != nil {
+		return err
+	}
 
-    cfZone, err := util.ResolveEnv("CF_ZONE_ID")
-    if err != nil {
-        return err
-    }
+	cfZone, err := util.ResolveEnv("CF_ZONE_ID")
+	if err != nil {
+		return err
+	}
 
 	api, err := cloudflare.New(apiToken, apiEmail)
 	if err != nil {
@@ -92,5 +92,5 @@ func IssueTursoDatabase(dbName string) (types.TursoDatabase, error) {
 		return types.TursoDatabase{}, err
 	}
 
-    return tursoDbResp, nil
+	return tursoDbResp, nil
 }
