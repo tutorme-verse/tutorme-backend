@@ -25,7 +25,7 @@ services:
     image: ghcr.io/tutorme-verse/tutorme-backend:${GIT_COMMIT_HASH:-latest}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.tutorme.rule=Host(`*.tutorme.tech`)"
+      - "traefik.http.routers.tutorme.rule=Host(`api.tutorme.tech`) || HostRegexp(`{subdomain:[a-z]+}.tutorme.tech`)"
       - "traefik.http.routers.tutorme.entrypoints=websecure"
       - "traefik.http.routers.tutorme.tls.certresolver=myresolver"
       - "traefik.http.services.tutorme.loadbalancer.server.port=3000"
