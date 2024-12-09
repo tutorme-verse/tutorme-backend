@@ -76,7 +76,11 @@ func (s *Server) CreateOrganization(c *fiber.Ctx) error {
 	}
 
 	requestUrl := fmt.Sprintf("https://api.turso.tech/v1/organizations/%s/databases", os.Getenv("TURSO_ORGANIZATION_SLUG"))
-	bearer := "Bearer " + os.Getenv("TURSO_API_TOKEN")
+	tursoToken, err := util.ResolveEnv("TURSO_API_TOKEN")
+	if err != nil {
+		return err
+	}
+	bearer := "Bearer " + tursoToken
 
 	req, err := http.NewRequest(http.MethodPost, requestUrl, reqBody)
 
