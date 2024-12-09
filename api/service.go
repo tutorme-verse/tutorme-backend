@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"os"
 	"time"
@@ -21,20 +22,20 @@ func CreateDNSRecord(ctx context.Context, subdomain string) error {
 		return err
 	}
 
-	fmt.Println(apiToken)
+	slog.Info(apiToken)
 
 	apiEmail, err := util.ResolveEnv("CF_API_EMAIL")
 	if err != nil {
 		return err
 	}
 
-	fmt.Println(apiEmail)
+	slog.Info(apiEmail)
 	cfZone, err := util.ResolveEnv("CF_ZONE_ID")
 	if err != nil {
 		return err
 	}
 
-	fmt.Println(cfZone)
+	slog.Info(cfZone)
 	api, err := cloudflare.New(apiToken, apiEmail)
 	if err != nil {
 		return err
