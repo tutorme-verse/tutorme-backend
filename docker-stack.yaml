@@ -10,6 +10,14 @@ services:
       - "--certificatesresolvers.myresolver.acme.dnschallenge.provider=cloudflare"
       - "--certificatesresolvers.myresolver.acme.email=heyanantraj@gmail.com"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    labels:
+      - "traefik.http.middlewares.test-ratelimit.ratelimit.average=100"
+      - "traefik.http.middlewares.test-ratelimit.ratelimit.burst=200"
+      - "traefik.http.middlewares.test-compress.compress=true"
+      - "traefik.http.middlewares.test-compress.compress.defaultEncoding=gzip"
+      - "traefik.http.middlewares.test-compress.compress.encodings=gzip,zstd,br"
+      - "traefik.http.middlewares.test-retry.retry.attempts=4"
+      - "traefik.http.middlewares.test-retry.retry.initialinterval=100ms"
     ports:
       - "80:80"
       - "443:443"
