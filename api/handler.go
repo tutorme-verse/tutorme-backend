@@ -46,4 +46,3 @@ func (s *Server) CreateOrganization(c *fiber.Ctx) error {
 
 	return c.JSON(finalResp)
 }
-
